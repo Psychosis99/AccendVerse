@@ -11,6 +11,8 @@ function SettingsButton() {
     <Pressable
       onPress={() => router.push('/settings')}
       hitSlop={10}
+      accessibilityRole="button"
+      accessibilityLabel="Settings"
       style={{
         marginRight: 20,
         width: 38,
@@ -39,8 +41,7 @@ function SettingsButton() {
 export default function TabsLayout() {
   return (
     <Tabs
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      tabBar={(props) => <TabBar {...(props as any)} />}
+      tabBar={(props) => <TabBar {...props} />}
       screenOptions={{
         headerStyle: { backgroundColor: colors.bg, height: 96 },
         headerShadowVisible: false,

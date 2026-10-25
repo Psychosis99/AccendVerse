@@ -26,7 +26,12 @@ export default function History() {
         const reps = item.entries.reduce((s, e) => s + entryReps(e), 0);
         const muscles = [...new Set(item.entries.map((e) => e.muscle))] as MuscleId[];
         return (
-          <Pressable style={styles.row} onPress={() => router.push({ pathname: '/day/[date]', params: { date: item.date } })}>
+          <Pressable
+            style={styles.row}
+            accessibilityRole="button"
+            accessibilityLabel={`Workout ${format(d, 'EEEE d MMMM')}`}
+            onPress={() => router.push({ pathname: '/day/[date]', params: { date: item.date } })}
+          >
             <View style={styles.dateBox}>
               <Text style={styles.dow}>{format(d, 'EEE')}</Text>
               <Text style={styles.day}>{format(d, 'd')}</Text>

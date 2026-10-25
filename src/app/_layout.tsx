@@ -14,7 +14,12 @@ import { Unbounded_800ExtraBold } from '@expo-google-fonts/unbounded/800ExtraBol
 import { DataProvider, useData } from '../data/DataContext';
 import { AnimatedSplash } from '../splash/AnimatedSplash';
 import { colors, fonts } from '../theme';
+import { installCrashGuard } from '../lib/crashGuard';
+import { CrashScreen } from '../components/CrashScreen';
 
+export { CrashScreen as ErrorBoundary };
+
+installCrashGuard();
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
 const navTheme = {

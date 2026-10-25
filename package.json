@@ -44,7 +44,8 @@
     "test": "jest",
     "build:splash": "node scripts/build-splash.mjs",
     "typecheck": "tsc --noEmit",
-    "postinstall": "node scripts/build-splash.mjs"
+    "postinstall": "node scripts/build-splash.mjs",
+    "smoke": "node scripts/smoke-web.mjs"
   },
   "private": true,
   "jest": {

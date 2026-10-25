@@ -85,6 +85,8 @@ export function NeonButton({
     <Pressable
       onPress={onPress}
       disabled={disabled}
+      accessibilityRole="button"
+      accessibilityLabel={title}
       style={({ pressed }) => [
         styles.button,
         {
@@ -106,7 +108,7 @@ export function NeonButton({
 
 export function Chip({ label, active, onPress, icon }: { label: string; active?: boolean; onPress?: () => void; icon?: ReactNode }) {
   return (
-    <Pressable onPress={onPress} style={[styles.chip, active && { borderColor: colors.neon, backgroundColor: 'rgba(184,255,59,0.08)' }]}>
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={label} style={[styles.chip, active && { borderColor: colors.neon, backgroundColor: 'rgba(184,255,59,0.08)' }]}>
       {icon}
       <Text style={[styles.chipText, active && { color: colors.neon }]}>{label}</Text>
     </Pressable>
