@@ -4,9 +4,16 @@ import { DarkTheme, Stack, ThemeProvider } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import * as SystemUI from 'expo-system-ui';
+import { useFonts } from 'expo-font';
+import { Inter_400Regular } from '@expo-google-fonts/inter/400Regular';
+import { Inter_500Medium } from '@expo-google-fonts/inter/500Medium';
+import { Inter_600SemiBold } from '@expo-google-fonts/inter/600SemiBold';
+import { SpaceGrotesk_500Medium } from '@expo-google-fonts/space-grotesk/500Medium';
+import { SpaceGrotesk_700Bold } from '@expo-google-fonts/space-grotesk/700Bold';
+import { Unbounded_800ExtraBold } from '@expo-google-fonts/unbounded/800ExtraBold';
 import { DataProvider, useData } from '../data/DataContext';
 import { AnimatedSplash } from '../splash/AnimatedSplash';
-import { colors } from '../theme';
+import { colors, fonts } from '../theme';
 
 SplashScreen.preventAutoHideAsync().catch(() => {});
 
@@ -28,6 +35,15 @@ const skipSplash = Platform.OS === 'web' && typeof location !== 'undefined' && l
 
 function Root() {
   const { ready } = useData();
+  const [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    SpaceGrotesk_500Medium,
+    SpaceGrotesk_700Bold,
+    Unbounded_800ExtraBold,
+  });
+  const fontsReady = fontsLoaded || !!fontError;
   const [introDone, setIntroDone] = useState(skipSplash);
   const onIntroDone = useCallback(() => setIntroDone(true), []);
 
@@ -39,21 +55,26 @@ function Root() {
 
   return (
     <View style={{ flex: 1, backgroundColor: colors.bg }}>
-      <Stack
-        screenOptions={{
-          headerStyle: { backgroundColor: colors.bg },
-          headerTintColor: colors.neon,
-          headerTitleStyle: { color: colors.text, fontWeight: '800' },
-          contentStyle: { backgroundColor: colors.bg },
-          animation: 'fade_from_bottom',
-        }}
-      >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="muscle/[id]" options={{ title: 'Muscle' }} />
-        <Stack.Screen name="day/[date]" options={{ title: 'Workout' }} />
-        <Stack.Screen name="settings" options={{ title: 'Settings' }} />
-      </Stack>
-      {!(introDone && ready) && <AnimatedSplash onDone={onIntroDone} />}
+      {fontsReady && (
+        <Stack
+          screenOptions={{
+            headerStyle: { backgroundColor: colors.bg },
+            headerShadowVisible: false,
+            headerTintColor: colors.neon,
+            headerTitle: '',
+            headerBackButtonDisplayMode: 'minimal',
+            headerTitleStyle: { color: colors.text, fontFamily: fonts.display },
+            contentStyle: { backgroundColor: colors.bg },
+            animation: 'fade_from_bottom',
+          }}
+        >
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="muscle/[id]" />
+          <Stack.Screen name="day/[date]" />
+          <Stack.Screen name="settings" />
+        </Stack>
+      )}
+      {!(introDone && ready && fontsReady) && <AnimatedSplash onDone={onIntroDone} />}
     </View>
   );
 }

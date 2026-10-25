@@ -2,7 +2,7 @@ import Svg, { Circle, Ellipse, G, Line, Path, Rect } from 'react-native-svg';
 import type { MuscleId } from '../data/types';
 import { colors } from '../theme';
 
-const BODY = '#26351F';
+const BODY = '#343937';
 const BACK_VIEW: MuscleId[] = ['back', 'triceps', 'hamstrings', 'glutes', 'calves'];
 
 // Limb segments in a 40×48 viewBox: [x1, y1, x2, y2]
@@ -96,7 +96,7 @@ export function MuscleIcon({ muscle, size = 24, active = true }: { muscle: Muscl
       <Path d="M13 10 Q20 8.4 27 10 L24.8 27.5 L15.2 27.5 Z" fill={BODY} />
       <Limbs segs={[...UPPER_ARMS, ...FOREARMS]} color={BODY} width={3} />
       <Limbs segs={[...THIGHS, ...SHINS]} color={BODY} width={3.6} />
-      {back && <Line x1={20} y1={10} x2={20} y2={26} stroke="#0E150B" strokeWidth={0.8} />}
+      {back && <Line x1={20} y1={10} x2={20} y2={26} stroke="#1C1F1F" strokeWidth={0.8} />}
       {/* Highlight with a soft glow */}
       {active && (
         <G opacity={0.35}>

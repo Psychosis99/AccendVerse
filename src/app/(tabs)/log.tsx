@@ -9,8 +9,8 @@ import { fromKey, isSunday, toKey, trainingDayOnOrBefore } from '../../lib/calen
 import { useToday } from '../../lib/useToday';
 import { MuscleIcon } from '../../components/MuscleIcon';
 import { Stepper } from '../../components/Stepper';
-import { Card, Chip, NeonButton, SectionTitle } from '../../components/ui';
-import { colors, spacing } from '../../theme';
+import { Card, Chip, NeonButton, Pill, ScreenHeader, SectionTitle } from '../../components/ui';
+import { colors, fonts, radius, spacing, type } from '../../theme';
 
 type Draft = Entry & { key: number };
 
@@ -82,7 +82,12 @@ export default function LogScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-      <SectionTitle right={existing ? <Text style={styles.badge}>EDITING</Text> : undefined}>Day</SectionTitle>
+      <ScreenHeader
+        overline={`Log · ${format(fromKey(date), 'EEEE, MMM d')}`}
+        title={existing ? 'Edit workout' : 'Log workout'}
+        right={<Pill label={existing ? 'Editing' : 'New'} active={!!existing} />}
+      />
+      <SectionTitle>Day</SectionTitle>
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 8, paddingBottom: spacing.lg }}>
         {dateOptions.map((k) => {
           const d = fromKey(k);
@@ -122,13 +127,21 @@ export default function LogScreen() {
         ))}
       </View>
 
-      <SectionTitle right={<Text style={styles.total}>{totalSets} sets</Text>}>Entries</SectionTitle>
+      <SectionTitle
+        right={
+          <Text style={styles.total}>
+            {totalSets} <Text style={type.small}>sets</Text>
+          </Text>
+        }
+      >
+        Entries
+      </SectionTitle>
       {entries.length === 0 && <Text style={styles.empty}>Tap a muscle group above to add sets × reps.</Text>}
       {entries.map((e) => (
         <Card key={e.key} style={styles.entryCard}>
           <View style={styles.entryHead}>
             <View style={styles.iconBox}>
-              <MuscleIcon muscle={e.muscle} size={30} />
+              <MuscleIcon muscle={e.muscle} size={32} />
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.entryMuscle}>{muscleName(e.muscle)}</Text>
@@ -170,38 +183,38 @@ export default function LogScreen() {
 }
 
 const styles = StyleSheet.create({
-  content: { padding: spacing.lg, paddingBottom: 48 },
-  badge: { color: colors.bg, backgroundColor: colors.neon, fontSize: 10, fontWeight: '900', paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, letterSpacing: 1 },
+  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 32 },
   dateChip: {
-    width: 52,
-    paddingVertical: 8,
+    width: 54,
+    paddingVertical: 10,
     alignItems: 'center',
-    borderRadius: 12,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
-    backgroundColor: colors.surface,
   },
-  dateChipOn: { backgroundColor: colors.neon, borderColor: colors.neon, shadowColor: colors.neon, shadowOpacity: 0.7, shadowRadius: 10, elevation: 6 },
-  dateDow: { color: colors.muted, fontSize: 11, fontWeight: '700' },
-  dateNum: { color: colors.text, fontSize: 18, fontWeight: '900' },
-  dot: { width: 5, height: 5, borderRadius: 3, marginTop: 3 },
+  dateChipOn: { backgroundColor: colors.neon, borderColor: colors.neon, shadowColor: colors.neon, shadowOpacity: 0.5, shadowRadius: 12, elevation: 6 },
+  dateDow: { color: colors.muted, fontSize: 10, fontFamily: fonts.displayMed, letterSpacing: 1, textTransform: 'uppercase' },
+  dateNum: { color: colors.text, fontSize: 20, fontFamily: fonts.display, marginTop: 2 },
+  dot: { width: 5, height: 5, borderRadius: 3, marginTop: 4 },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: spacing.xl },
-  total: { color: colors.neon, fontWeight: '800' },
-  empty: { color: colors.muted, marginBottom: spacing.lg },
-  entryCard: { padding: spacing.md },
-  entryHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginBottom: spacing.md },
-  iconBox: { width: 42, height: 42, borderRadius: 10, borderWidth: 1, borderColor: colors.neon, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
-  entryMuscle: { color: colors.neon, fontWeight: '900', fontSize: 15 },
-  exercise: { color: colors.text, fontSize: 13, paddingVertical: 2 },
-  remove: { color: colors.muted, fontSize: 16, padding: 4 },
+  total: { color: colors.neon, fontFamily: fonts.display, fontSize: 16 },
+  empty: { ...type.small, marginBottom: spacing.lg },
+  entryCard: { padding: spacing.lg },
+  entryHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginBottom: spacing.lg },
+  iconBox: { width: 48, height: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center', backgroundColor: 'rgba(184,255,59,0.08)', borderWidth: 1, borderColor: 'rgba(184,255,59,0.4)' },
+  entryMuscle: { color: colors.text, fontFamily: fonts.display, fontSize: 17 },
+  exercise: { color: colors.sub, fontSize: 13, fontFamily: fonts.body, paddingVertical: 2 },
+  remove: { color: colors.muted, fontSize: 15, padding: 6 },
   steppers: { flexDirection: 'row', gap: spacing.sm },
   notes: {
     color: colors.text,
+    fontFamily: fonts.body,
     borderWidth: 1,
     borderColor: colors.border,
-    borderRadius: 12,
-    padding: spacing.md,
-    minHeight: 60,
+    borderRadius: radius.lg,
+    padding: spacing.lg,
+    minHeight: 64,
     marginBottom: spacing.lg,
     backgroundColor: colors.surface,
     textAlignVertical: 'top',

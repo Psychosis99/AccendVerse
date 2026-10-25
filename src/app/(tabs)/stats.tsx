@@ -10,8 +10,8 @@ import { formatNumber, inRange, totalsByMuscle, weeklySeries } from '../../lib/s
 import { useToday } from '../../lib/useToday';
 import { BarChart, Donut, LineChart } from '../../components/Charts';
 import { MuscleIcon } from '../../components/MuscleIcon';
-import { Card, Chip, SectionTitle, StatCard } from '../../components/ui';
-import { colors, spacing } from '../../theme';
+import { Card, Chip, ScreenHeader, SectionTitle, StatCard } from '../../components/ui';
+import { colors, fonts, radius, spacing, type } from '../../theme';
 import { staggered, useProgress } from '../../anim/hooks';
 
 const RANGES = [
@@ -44,6 +44,10 @@ export default function Stats() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={styles.content}>
+      <ScreenHeader
+        overline={`Stats · ${RANGES[range].weeks ? `last ${RANGES[range].weeks} weeks` : 'all time'}`}
+        title={ranked[0]?.sets ? `${muscleName(ranked[0].muscle)} carried the block.` : 'Numbers start with a set.'}
+      />
       <View style={styles.toggle}>
         {RANGES.map((r, i) => (
           <Pressable key={r.label} style={[styles.toggleBtn, i === range && styles.toggleOn]} onPress={() => setRange(i)}>
@@ -53,7 +57,7 @@ export default function Stats() {
       </View>
 
       <View style={styles.statGrid}>
-        <StatCard label="Workouts" value={scoped.length} />
+        <StatCard label="Workouts" value={scoped.length} accent />
         <StatCard label="Total sets" value={sumSets} delay={80} />
         <StatCard label="Total reps" value={sumReps} delay={160} />
         <StatCard label="Volume" value={sumVolume} suffix=" kg" delay={240} />
@@ -74,17 +78,17 @@ export default function Stats() {
         {ranked.map((t, i) => (
           <Pressable key={t.muscle} style={styles.muscleRow} onPress={() => router.push({ pathname: '/muscle/[id]', params: { id: t.muscle } })}>
             <View style={styles.iconBox}>
-              <MuscleIcon muscle={t.muscle} size={24} active={t.sets > 0} />
+              <MuscleIcon muscle={t.muscle} size={26} active={t.sets > 0} />
             </View>
             <View style={{ flex: 1 }}>
               <View style={styles.muscleTop}>
                 <Text style={styles.muscleName}>{muscleName(t.muscle)}</Text>
                 <Text style={styles.muscleNums}>
-                  <Text style={{ color: colors.neon, fontWeight: '800' }}>{t.sets}</Text> sets · {formatNumber(t.reps)} reps
+                  <Text style={{ color: i === 0 ? colors.neon : colors.text, fontFamily: fonts.display }}>{t.sets}</Text> sets · {formatNumber(t.reps)} reps
                 </Text>
               </View>
               <View style={styles.track}>
-                <View style={[styles.fill, { width: `${(t.sets / maxSets) * 100 * staggered(p, i, ranked.length, 0.5)}%` }]} />
+                <View style={[styles.fill, i === 0 && { backgroundColor: colors.neon }, { width: `${(t.sets / maxSets) * 100 * staggered(p, i, ranked.length, 0.5)}%` }]} />
               </View>
             </View>
           </Pressable>
@@ -111,17 +115,17 @@ export default function Stats() {
 }
 
 const styles = StyleSheet.create({
-  content: { padding: spacing.lg, paddingBottom: 40 },
-  toggle: { flexDirection: 'row', borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: 3, marginBottom: spacing.md, backgroundColor: colors.surface },
-  toggleBtn: { flex: 1, paddingVertical: 8, alignItems: 'center', borderRadius: 9 },
+  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 32 },
+  toggle: { flexDirection: 'row', borderRadius: radius.pill, padding: 4, marginBottom: spacing.md, backgroundColor: colors.surface, borderWidth: 1, borderColor: colors.border },
+  toggleBtn: { flex: 1, paddingVertical: 9, alignItems: 'center', borderRadius: radius.pill },
   toggleOn: { backgroundColor: colors.neon },
-  toggleText: { color: colors.muted, fontWeight: '800', letterSpacing: 1 },
+  toggleText: { color: colors.muted, fontFamily: fonts.display, fontSize: 13, letterSpacing: 1 },
   statGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md, marginBottom: spacing.md },
-  muscleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 7 },
-  iconBox: { width: 34, height: 34, borderRadius: 8, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg },
-  muscleTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 5 },
-  muscleName: { color: colors.text, fontWeight: '700' },
-  muscleNums: { color: colors.muted, fontSize: 12 },
-  track: { height: 6, backgroundColor: colors.heat[0], borderRadius: 3, overflow: 'hidden' },
-  fill: { height: '100%', backgroundColor: colors.neon, borderRadius: 3 },
+  muscleRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, paddingVertical: 8 },
+  iconBox: { width: 40, height: 40, borderRadius: radius.sm, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.surfaceHi },
+  muscleTop: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 7 },
+  muscleName: { ...type.bodyStrong, fontFamily: fonts.display, fontSize: 15 },
+  muscleNums: { color: colors.muted, fontSize: 12, fontFamily: fonts.body },
+  track: { height: 5, backgroundColor: 'rgba(255,255,255,0.06)', borderRadius: 3, overflow: 'hidden' },
+  fill: { height: '100%', backgroundColor: colors.muted, borderRadius: 3 },
 });

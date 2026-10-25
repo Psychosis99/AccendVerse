@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { ScrollView, StyleSheet, Text, View, type ScrollViewInstance } from 'react-native';
 import Svg, { G, Rect, Text as SvgText } from 'react-native-svg';
 import { format } from 'date-fns';
-import { colors } from '../theme';
+import { colors, fonts } from '../theme';
 import { heatLevel, heatmapWeeks, toKey, WEEKDAY_LABELS } from '../lib/calendar';
 import { staggered, useProgress } from '../anim/hooks';
 
@@ -23,7 +23,7 @@ export function Heatmap({ sets, today, weeks = 26, onPressDay }: Props) {
   const scroll = useRef<ScrollViewInstance>(null);
   const grid = useMemo(() => heatmapWeeks(today, weeks), [today, weeks]);
   const todayKey = toKey(today);
-  const p = useProgress(sets, 1100, 150, 'outQuad');
+  const p = useProgress(sets.size, 1100, 150, 'outQuad');
 
   const width = grid.length * (CELL + GAP);
   const height = TOP + 6 * (CELL + GAP);
@@ -45,7 +45,7 @@ export function Heatmap({ sets, today, weeks = 26, onPressDay }: Props) {
         <Svg width={LEFT} height={height}>
           {WEEKDAY_LABELS.map((d, r) =>
             r % 2 === 0 ? (
-              <SvgText key={d} x={0} y={TOP + r * (CELL + GAP) + CELL - 3} fill={colors.muted} fontSize={9} fontFamily="sans-serif">
+              <SvgText key={d} x={0} y={TOP + r * (CELL + GAP) + CELL - 3} fill={colors.muted} fontSize={9} letterSpacing={1} fontFamily={fonts.displayMed}>
                 {d}
               </SvgText>
             ) : null,
@@ -54,7 +54,7 @@ export function Heatmap({ sets, today, weeks = 26, onPressDay }: Props) {
       <ScrollView ref={scroll} horizontal showsHorizontalScrollIndicator={false} style={{ flex: 1 }}>
         <Svg width={width} height={height}>
           {monthLabels.map(({ i, label }) => (
-            <SvgText key={i} x={i * (CELL + GAP)} y={10} fill={colors.muted} fontSize={10} fontFamily="sans-serif">
+            <SvgText key={i} x={i * (CELL + GAP)} y={10} fill={colors.muted} fontSize={10} fontFamily={fonts.displayMed}>
               {label}
             </SvgText>
           ))}
@@ -77,7 +77,7 @@ export function Heatmap({ sets, today, weeks = 26, onPressDay }: Props) {
                       y={y + (CELL - s) / 2}
                       width={s}
                       height={s}
-                      rx={3}
+                      rx={4}
                       fill={future ? 'transparent' : colors.heat[level]}
                       stroke={key === todayKey ? colors.neon : future ? colors.border : 'transparent'}
                       strokeWidth={key === todayKey ? 1.5 : 1}
@@ -109,6 +109,6 @@ const styles = StyleSheet.create({
   row: { flexDirection: 'row' },
   legend: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
   legendScale: { flexDirection: 'row', alignItems: 'center', gap: 3 },
-  legendCell: { width: 10, height: 10, borderRadius: 2 },
-  legendText: { color: colors.muted, fontSize: 10, marginHorizontal: 2 },
+  legendCell: { width: 10, height: 10, borderRadius: 3 },
+  legendText: { color: colors.muted, fontSize: 10, marginHorizontal: 2, fontFamily: fonts.body },
 });

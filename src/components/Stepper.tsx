@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
-import { colors } from '../theme';
+import { colors, fonts, radius } from '../theme';
 
 /** Numeric field with −/+ buttons. `value` null means empty (e.g. no weight). */
 export function Stepper({
@@ -49,9 +49,9 @@ export function Stepper({
 
 const styles = StyleSheet.create({
   wrap: { flex: 1, alignItems: 'center' },
-  label: { color: colors.muted, fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 4 },
-  row: { alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.border, borderRadius: 10, backgroundColor: colors.bg },
-  btn: { width: 28, height: 36, alignItems: 'center', justifyContent: 'center' },
-  btnText: { color: colors.neon, fontSize: 20, fontWeight: '700' },
-  input: { flex: 1, minWidth: 0, width: '100%', color: colors.text, fontSize: 17, fontWeight: '800', textAlign: 'center', paddingVertical: 4 },
+  label: { color: colors.muted, fontSize: 9, letterSpacing: 1.8, textTransform: 'uppercase', marginBottom: 6, fontFamily: fonts.displayMed },
+  row: { alignSelf: 'stretch', flexDirection: 'row', alignItems: 'center', borderRadius: radius.md, backgroundColor: colors.surfaceHi },
+  btn: { width: 30, height: 42, alignItems: 'center', justifyContent: 'center' },
+  btnText: { color: colors.neon, fontSize: 20, fontFamily: fonts.displayMed },
+  input: { flex: 1, minWidth: 0, width: '100%', color: colors.text, fontSize: 18, fontFamily: fonts.display, textAlign: 'center', paddingVertical: 4 },
 });

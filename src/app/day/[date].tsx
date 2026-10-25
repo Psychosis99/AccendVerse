@@ -1,12 +1,12 @@
 import { Alert, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { Stack, router, useLocalSearchParams } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { format } from 'date-fns';
 import { useData } from '../../data/DataContext';
 import { fromKey } from '../../lib/calendar';
-import { entryReps, entryVolume, formatNumber } from '../../lib/stats';
+import { entryReps, entryVolume } from '../../lib/stats';
 import { EntryRow } from '../../components/EntryRow';
-import { Card, Empty, NeonButton, SectionTitle, StatCard } from '../../components/ui';
-import { colors, spacing } from '../../theme';
+import { Card, Empty, NeonButton, Pill, ScreenHeader, SectionTitle, StatCard } from '../../components/ui';
+import { colors, spacing, type } from '../../theme';
 
 export default function DayDetail() {
   const { date } = useLocalSearchParams<{ date: string }>();
@@ -34,48 +34,44 @@ export default function DayDetail() {
   };
 
   return (
-    <>
-      <Stack.Screen options={{ title: format(d, 'EEE, d MMM yyyy') }} />
-      <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>{format(d, 'EEEE')}</Text>
-        <Text style={styles.subtitle}>{format(d, 'd MMMM yyyy')}</Text>
+    <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={styles.content}>
+      <ScreenHeader
+        overline={`Workout · ${format(d, 'MMM d, yyyy')}`}
+        title={format(d, 'EEEE')}
+        right={<Pill label={day ? `${day.entries.length} entries` : 'Rest'} active={!!day} />}
+      />
 
-        {day ? (
-          <>
-            <View style={styles.statGrid}>
-              <StatCard label="Sets" value={sets} style={styles.statSmall} />
-              <StatCard label="Reps" value={reps} delay={80} style={styles.statSmall} />
-              <StatCard label="Volume" value={volume} suffix=" kg" delay={160} style={styles.statSmall} />
-            </View>
-            <Card>
-              <SectionTitle right={<Text style={styles.meta}>{formatNumber(day.entries.length)} entries</Text>}>Entries</SectionTitle>
-              {day.entries.map((e, i) => (
-                <EntryRow key={i} entry={e} />
-              ))}
-              {day.notes ? <Text style={styles.notes}>“{day.notes}”</Text> : null}
-            </Card>
-            <View style={{ gap: spacing.md }}>
-              <NeonButton title="Edit workout" onPress={() => router.navigate({ pathname: '/log', params: { date } })} />
-              <NeonButton title="Delete" variant="danger" onPress={confirmDelete} />
-            </View>
-          </>
-        ) : (
+      {day ? (
+        <>
+          <View style={styles.statGrid}>
+            <StatCard label="Sets" value={sets} style={styles.statSmall} accent />
+            <StatCard label="Reps" value={reps} delay={80} style={styles.statSmall} />
+            <StatCard label="Kg moved" value={volume} delay={160} style={styles.statSmall} />
+          </View>
           <Card>
-            <Empty title="Rest day" hint="Nothing logged for this day." />
-            <NeonButton title="Log this day" variant="outline" onPress={() => router.navigate({ pathname: '/log', params: { date } })} />
+            <SectionTitle>Entries</SectionTitle>
+            {day.entries.map((e, i) => (
+              <EntryRow key={i} entry={e} last={i === day.entries.length - 1} />
+            ))}
+            {day.notes ? <Text style={[type.body, { marginTop: spacing.md, fontStyle: 'italic' }]}>“{day.notes}”</Text> : null}
           </Card>
-        )}
-      </ScrollView>
-    </>
+          <View style={{ gap: spacing.md }}>
+            <NeonButton title="Edit workout" onPress={() => router.navigate({ pathname: '/log', params: { date } })} />
+            <NeonButton title="Delete" variant="danger" onPress={confirmDelete} />
+          </View>
+        </>
+      ) : (
+        <Card>
+          <Empty title="Rest day" hint="Nothing logged for this day." />
+          <NeonButton title="Log this day" variant="outline" onPress={() => router.navigate({ pathname: '/log', params: { date } })} />
+        </Card>
+      )}
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: spacing.lg, paddingBottom: 40 },
-  title: { color: colors.neon, fontSize: 30, fontWeight: '900' },
-  subtitle: { color: colors.muted, marginBottom: spacing.lg },
+  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 32 },
   statGrid: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
   statSmall: { minWidth: 0 },
-  meta: { color: colors.muted, fontSize: 11 },
-  notes: { color: colors.muted, fontStyle: 'italic', marginTop: spacing.md },
 });

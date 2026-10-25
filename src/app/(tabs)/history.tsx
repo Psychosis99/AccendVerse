@@ -5,8 +5,8 @@ import { useData } from '../../data/DataContext';
 import { fromKey } from '../../lib/calendar';
 import { entryReps } from '../../lib/stats';
 import { MuscleIcon } from '../../components/MuscleIcon';
-import { Empty } from '../../components/ui';
-import { colors, spacing } from '../../theme';
+import { Empty, ScreenHeader } from '../../components/ui';
+import { colors, fonts, radius, spacing } from '../../theme';
 import type { MuscleId } from '../../data/types';
 
 export default function History() {
@@ -15,7 +15,8 @@ export default function History() {
   return (
     <FlatList
       style={{ backgroundColor: colors.bg }}
-      contentContainerStyle={{ padding: spacing.lg, paddingBottom: 40 }}
+      contentContainerStyle={{ paddingHorizontal: 20, paddingTop: 4, paddingBottom: 32 }}
+      ListHeaderComponent={<ScreenHeader overline={`History · ${days.length} sessions`} title="Every rep, logged." />}
       data={days}
       keyExtractor={(d) => d.date}
       ListEmptyComponent={<Empty title="Nothing logged yet" hint="Your workouts will appear here." />}
@@ -35,13 +36,12 @@ export default function History() {
               <View style={styles.icons}>
                 {muscles.map((m) => (
                   <View key={m} style={styles.iconBox}>
-                    <MuscleIcon muscle={m} size={22} />
+                    <MuscleIcon muscle={m} size={24} />
                   </View>
                 ))}
               </View>
               <Text style={styles.summary}>
-                <Text style={styles.num}>{sets}</Text> sets · <Text style={styles.num}>{reps}</Text> reps · {muscles.length} muscle
-                {muscles.length === 1 ? '' : 's'}
+                <Text style={styles.num}>{sets}</Text> sets  ·  <Text style={styles.num}>{reps}</Text> reps
               </Text>
             </View>
             <Text style={styles.chev}>›</Text>
@@ -58,19 +58,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     padding: spacing.md,
-    borderRadius: 14,
+    paddingLeft: spacing.lg,
+    borderRadius: radius.lg,
     borderWidth: 1,
     borderColor: colors.border,
+    borderTopColor: colors.borderHi,
     backgroundColor: colors.surface,
     marginBottom: spacing.sm,
   },
-  dateBox: { width: 50, alignItems: 'center', borderRightWidth: 1, borderRightColor: colors.border, paddingRight: spacing.md },
-  dow: { color: colors.muted, fontSize: 10, fontWeight: '700', textTransform: 'uppercase' },
-  day: { color: colors.neon, fontSize: 22, fontWeight: '900' },
-  mon: { color: colors.muted, fontSize: 10, textTransform: 'uppercase' },
+  dateBox: { width: 46, alignItems: 'flex-start' },
+  dow: { color: colors.muted, fontSize: 10, fontFamily: fonts.displayMed, letterSpacing: 1.5, textTransform: 'uppercase' },
+  day: { color: colors.text, fontSize: 26, fontFamily: fonts.display, letterSpacing: -1, lineHeight: 30 },
+  mon: { color: colors.neon, fontSize: 10, fontFamily: fonts.displayMed, letterSpacing: 1.5, textTransform: 'uppercase' },
   icons: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
-  iconBox: { width: 28, height: 28, borderRadius: 7, backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.border, alignItems: 'center', justifyContent: 'center' },
-  summary: { color: colors.muted, fontSize: 12 },
-  num: { color: colors.text, fontWeight: '800' },
-  chev: { color: colors.neon, fontSize: 26, fontWeight: '300' },
+  iconBox: { width: 30, height: 30, borderRadius: 9, backgroundColor: colors.surfaceHi, alignItems: 'center', justifyContent: 'center' },
+  summary: { color: colors.muted, fontSize: 12, fontFamily: fonts.body },
+  num: { color: colors.text, fontFamily: fonts.display },
+  chev: { color: colors.muted, fontSize: 24, fontFamily: fonts.body },
 });

@@ -1,12 +1,13 @@
-import { Alert, Platform, ScrollView, StyleSheet, Text } from 'react-native';
+import { Alert, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { File, Paths } from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { format } from 'date-fns';
 import { useData } from '../data/DataContext';
 import { isMuscleId } from '../data/muscles';
 import type { Backup, DayLog } from '../data/types';
-import { Card, NeonButton, SectionTitle } from '../components/ui';
-import { colors, spacing } from '../theme';
+import { Card, NeonButton, ScreenHeader, SectionTitle } from '../components/ui';
+import { Logo } from '../components/Logo';
+import { colors, fonts, spacing, type } from '../theme';
 
 function notify(title: string, msg?: string) {
   if (Platform.OS === 'web') window.alert(msg ? `${title}\n${msg}` : title);
@@ -80,11 +81,12 @@ export default function Settings() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.bg }} contentContainerStyle={styles.content}>
+      <ScreenHeader overline="Settings · on-device" title="Your data stays here." />
       <Card>
         <SectionTitle>Your data</SectionTitle>
         <Text style={styles.text}>
           Everything is stored only on this phone, in a local database. Nothing is uploaded. You have{' '}
-          <Text style={{ color: colors.neon, fontWeight: '800' }}>{days.length}</Text> workouts logged.
+          <Text style={{ color: colors.neon, fontFamily: fonts.display }}>{days.length}</Text> workouts logged.
         </Text>
       </Card>
       <Card style={{ gap: spacing.md }}>
@@ -101,13 +103,16 @@ export default function Settings() {
           onPress={() => confirm('Erase everything?', 'All logged workouts will be permanently deleted.', () => replaceAll([]))}
         />
       </Card>
-      <Text style={styles.footer}>AccendVerse v1.0 · Mon–Sat training, Sundays off</Text>
+      <View style={{ alignItems: 'center', marginTop: spacing.xl, gap: 8 }}>
+        <Logo size={28} />
+        <Text style={styles.footer}>AccendVerse v1.0 · Mon–Sat training, Sundays off</Text>
+      </View>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: spacing.lg, paddingBottom: 40 },
-  text: { color: colors.muted, lineHeight: 20 },
-  footer: { color: colors.muted, textAlign: 'center', fontSize: 11, marginTop: spacing.lg },
+  content: { paddingHorizontal: 20, paddingTop: 4, paddingBottom: 32 },
+  text: { ...type.body },
+  footer: { ...type.small, textAlign: 'center', fontSize: 11 },
 });
