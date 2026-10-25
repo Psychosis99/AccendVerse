@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  body {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    font-family: -apple-system, Roboto, 'Segoe UI', sans-serif; color: #39FF14;
+  }
+  #stage { position: relative; display: flex; flex-direction: column; align-items: center; }
+  #hero { position: relative; display: flex; align-items: center; justify-content: center; }
+  #grid { display: grid; grid-template-columns: repeat(13, 14px); gap: 5px; }
+  #logo { position: absolute; top: 50%; left: 50%; margin: -60px 0 0 -60px; }
+  .cell { width: 14px; height: 14px; border-radius: 3px; background: #0F1A0D; opacity: 0; }
+  #logo { width: 120px; height: 120px; z-index: 1; filter: drop-shadow(0 0 10px rgba(57,255,20,.7)); }
+  #logo path { fill: none; stroke: #39FF14; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  #logo .core { fill: #39FF14; stroke: none; opacity: 0; }
+  #title { margin-top: 34px; font-size: 30px; font-weight: 900; letter-spacing: 6px; z-index: 1; white-space: nowrap; }
+  #title span { display: inline-block; opacity: 0; text-shadow: 0 0 12px rgba(57,255,20,.8); }
+  #tag { margin-top: 10px; font-size: 11px; letter-spacing: 5px; color: #6B7F66; opacity: 0; z-index: 1; }
+  #bar { position: absolute; bottom: 64px; width: 160px; height: 3px; background: #0F1A0D; border-radius: 2px; overflow: hidden; }
+  #fill { width: 100%; height: 100%; background: #39FF14; transform-origin: left; transform: scaleX(0); box-shadow: 0 0 10px #39FF14; }
+</style>
+</head>
+<body>
+  <div id="stage">
+    <div id="hero">
+    <div id="grid"></div>
+    <svg id="logo" viewBox="0 0 100 100">
+      <!-- Ascending "A" chevrons -->
+      <path class="draw" d="M14 84 L50 16 L86 84" />
+      <path class="draw" d="M30 84 L50 46 L70 84" />
+      <path class="draw" d="M38 68 L62 68" />
+      <path class="core" d="M50 4 L57 16 L43 16 Z" />
+    </svg>
+    </div>
+    <div id="title"></div>
+    <div id="tag">TRACK · TRAIN · ASCEND</div>
+  </div>
+  <div id="bar"><div id="fill"></div></div>
+
+<script>/*ANIME_JS*/</script>
+<script>
+(function () {
+  var A = window.anime;
+  var COLS = 13, ROWS = 9;
+  var grid = document.getElementById('grid');
+  var heat = ['#0F1A0D', '#1A4A10', '#238019', '#2FBF1A', '#39FF14'];
+  for (var i = 0; i < COLS * ROWS; i++) {
+    var c = document.createElement('div');
+    c.className = 'cell';
+    grid.appendChild(c);
+  }
+  var title = document.getElementById('title');
+  'ACCENDVERSE'.split('').forEach(function (ch) {
+    var s = document.createElement('span');
+    s.textContent = ch;
+    title.appendChild(s);
+  });
+
+  function done() {
+    var msg = 'done';
+    if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(msg);
+    else if (window.parent !== window) window.parent.postMessage(msg, '*');
+  }
+
+  var tl = A.createTimeline({ defaults: { ease: 'outExpo' }, onComplete: done });
+
+  tl
+    // Heatmap grid ripples out from the center, like a LeetCode activity board lighting up.
+    .add('.cell', {
+      opacity: [0, 1],
+      scale: [0, 1],
+      backgroundColor: function () { return heat[Math.floor(Math.random() * heat.length)]; },
+      delay: A.stagger(28, { grid: [COLS, ROWS], from: 'center' }),
+      duration: 500,
+    }, 0)
+    // Logo strokes draw themselves.
+    .add(A.svg.createDrawable('.draw'), {
+      draw: ['0 0', '0 1'],
+      duration: 900,
+      delay: A.stagger(160),
+      ease: 'inOutQuad',
+    }, 250)
+    .add('.core', { opacity: [0, 1], translateY: [12, 0], duration: 500 }, 900)
+    // Letters drop in one by one.
+    .add('#title span', {
+      opacity: [0, 1],
+      translateY: [-24, 0],
+      rotate: [-12, 0],
+      delay: A.stagger(45),
+      duration: 650,
+    }, 800)
+    .add('#tag', { opacity: [0, 1], letterSpacing: ['12px', '5px'], duration: 800 }, 1300)
+    .add('#fill', { scaleX: [0, 1], duration: 1700, ease: 'inOutCubic' }, 300)
+    // Grid dims behind the logo, then a single neon pulse.
+    .add('.cell', { opacity: 0.25, duration: 600, delay: A.stagger(8, { grid: [COLS, ROWS], from: 'center' }) }, 1400)
+    .add('#logo', { scale: [1, 1.12, 1], duration: 500, ease: 'inOutSine' }, 1900)
+    .add('body', { opacity: [1, 0], duration: 450, ease: 'inQuad' }, 2500);
+})();
+</script>
+</body>
+</html>
