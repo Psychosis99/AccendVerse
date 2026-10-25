@@ -12,8 +12,6 @@ An offline gym progress tracker for Android, with a LeetCode-style activity grid
 ![anime.js](https://img.shields.io/badge/anime.js-v4-0A0B0B?logoColor=B8FF3B)
 ![Offline](https://img.shields.io/badge/data-100%25%20on--device-B8FF3B?labelColor=0A0B0B)
 
-<img src="previews/overview.jpg" alt="AccendVerse screens" width="100%" />
-
 </div>
 
 ---
@@ -24,33 +22,33 @@ Most gym apps want an account, a subscription, and your data in their cloud. Acc
 
 ## Features
 
-### 🟩 Activity grid (LeetCode style)
+###  Activity grid (LeetCode style)
 - A 26-week heatmap with **Monday to Saturday rows only**. Sundays are rest days, so they never appear.
 - A cell gets brighter the more **total sets** you did that day (5 levels, graphite to lime).
 - Tap any cell to open that day's workout.
 - Every muscle has its own grid on its detail page.
 
-### 🔥 Streaks that respect rest days
+###  Streaks that respect rest days
 - The **current** and **longest** streaks count only training days. A Sunday never breaks a streak and never adds to one.
 - If you haven't logged today yet, your streak still counts up to yesterday.
 
-### 💪 Per-muscle tracking
+###  Per-muscle tracking
 - 11 muscle groups: Chest, Back, Shoulders, Biceps, Triceps, Forearms, Core, Quads, Hamstrings, Glutes, Calves.
 - Each entry stores **sets × reps**, plus an optional exercise name and weight in kg.
 - Each muscle has a **custom SVG icon** (a body silhouette with that muscle lit). It appears next to every number.
 
-### 📊 Dashboard and stats
+### Dashboard and stats
 - **Streak gauge**: a dial with a tick ring and a lime band for this week's progress (days trained out of 6), plus an inner arc for your current streak against your best.
 - **This week**: striped Mon–Sat bars with a label on the top day.
 - **Last 4 weeks**: ranked rows, with the best week highlighted.
 - **Stats** for 4 weeks, 12 weeks or all time: totals, sets per week, a muscle split donut, per-muscle bars, and volume trends.
 - **Needs work**: flags muscles you haven't trained in 7+ days.
 
-### ✨ Motion
+###  Motion
 - **Loading screen**: an anime.js timeline. The tick ring sweeps on, the lime arc draws itself, **AV** drops in, and Mon–Sat bars rise. It runs in a WebView with anime.js and subset fonts built in, so it works with no internet.
 - **In the app**: anime.js tweens drive count-up numbers, the heatmap filling in, growing chart bars, the gauge sweep, and a pulsing Save button.
 
-### 🔒 Local-first
+###  Local-first
 - All data lives in an on-device **SQLite** database.
 - **Export / import** a JSON backup from Settings, for example to move to a new phone.
 - No accounts, no network calls, no analytics.
