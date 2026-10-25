@@ -5,6 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# A newer push cancels any build still running for the same branch.
+concurrency:
+  group: android-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,6 +26,8 @@ jobs:
           distribution: temurin
           java-version: 17
 
+      - uses: gradle/actions/setup-gradle@v4
+
       - name: Install dependencies
         run: npm ci
 
@@ -34,7 +41,9 @@ jobs:
 
       - name: Build release APK
         working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+        # arm64-v8a covers virtually all modern Android phones; skipping the other
+        # three ABIs cuts native compile time by roughly 70%.
+        run: ./gradlew assembleRelease --no-daemon -PreactNativeArchitectures=arm64-v8a
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
